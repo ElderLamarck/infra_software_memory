@@ -146,7 +146,9 @@ int main(int argc, char *argv[]){
         fseek(file_bin, (page * 256), SEEK_SET);
         fread(memoryStack[pageTable[page].indexMemory].bin, 256, 1,file_bin);
 
-        printf("Virtual address: %d Physical address: %d Value: %d\n", decimal, (((pageTable[page].indexMemory) * 256) + offset), memoryStack[pageTable[page].indexMemory].bin[offset]);
+        printf("Virtual address: %d ", decimal);
+        printf("Physical address: %d ",(((pageTable[page].indexMemory) * 256) + offset));
+        printf("Value: %d\n",memoryStack[pageTable[page].indexMemory].bin[offset]);
     }
     printf("Number of Translated Addresses = %d\n", time);
     printf("Page Faults = %d\n", pageFault);
