@@ -15,5 +15,8 @@ test3:
 test4:
 	./vm addresses.txt lru lru
 
+test5:
+	./vm addresses.txt lru lru
+
 clean:
 	rm vm
