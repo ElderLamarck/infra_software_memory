@@ -120,6 +120,8 @@ int main(int argc, char *argv[]){
                 pageTable[page].isCreated = IN_MEMORY;
                 time--;
                 fsetpos(file_txt, &position);
+                fseek(file_bin, (page * 256), SEEK_SET);
+                fread(memoryStack[pageTable[page].indexMemory].bin, 256, 1,file_bin);
                 continue;
 
             }else{
@@ -153,8 +155,6 @@ int main(int argc, char *argv[]){
             } 
         }
         fgetpos(file_txt, &position);
-        fseek(file_bin, (page * 256), SEEK_SET);
-        fread(memoryStack[pageTable[page].indexMemory].bin, 256, 1,file_bin);
 
         fprintf(file_correct,"Virtual address: %d ", decimal);
         fprintf(file_correct,"Physical address: %d ",(((pageTable[page].indexMemory) * 256) + offset));
