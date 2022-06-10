@@ -37,14 +37,18 @@ unsigned int getPage(int decimal);
 
 
 int main(int argc, char *argv[]){
+    if(argc < 4){
+        exit(-1);
+    }
+
     if(strcmp(argv[1], "addresses.txt") != 0){
-        return -1;
+        exit(-1);
     }
     if(strcmp(argv[2], "lru") != 0 && strcmp(argv[2], "fifo") != 0){
-        return -1;
+        exit(-1);
     }
     else if(strcmp(argv[3], "lru") != 0 && strcmp(argv[3], "fifo") != 0){
-        return -1;
+        exit(-1);
     }
 
     int decimal, count = 0, pageFault = 0;
@@ -57,7 +61,7 @@ int main(int argc, char *argv[]){
     fpos_t position;
 
     if(file_txt == NULL){
-        return -1;
+        exit(-1);
     }
     fgetpos(file_txt, &position);
 
