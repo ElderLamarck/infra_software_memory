@@ -18,7 +18,7 @@ typedef struct page_table_args{
 }Page_table_args;
 
 typedef struct memoryStack{
-    char bin[SIZE_MEMORY];
+    char bin[256];
 } MemoryStack;
 
 typedef struct tlb{
@@ -37,19 +37,29 @@ unsigned int getPage(int decimal);
 
 
 int main(int argc, char *argv[]){
+    if(strcmp(argv[1], "addresses.txt") != 0){
+        return -1;
+    }
+    if(strcmp(argv[2], "lru") != 0 && strcmp(argv[2], "fifo") != 0){
+        return -1;
+    }
+    else if(strcmp(argv[3], "lru") != 0 && strcmp(argv[3], "fifo") != 0){
+        return -1;
+    }
 
     int decimal, count = 0, pageFault = 0;
     int time = 0, lock = 0, found = NOT_IN_MEMORY;
     int countTLB = 0, hitTLB = 0, lock2 = 0;
 
-    FILE *file_txt;
-    FILE *file_bin;
+    FILE *file_txt = fopen("addresses.txt" , "r");
+    FILE *file_bin = fopen("BACKING_STORE.bin", "r");
+    FILE *file_correct = fopen("correct.txt", "w");
     fpos_t position;
 
-    file_txt = fopen(argv[1] , "r");
-    file_bin = fopen("BACKING_STORE.bin", "r");
+    if(file_txt == NULL){
+        return -1;
+    }
     fgetpos(file_txt, &position);
-
 
     while(fscanf(file_txt, "%d", &decimal)!= EOF){  
         int page = getPage(decimal);
@@ -146,18 +156,19 @@ int main(int argc, char *argv[]){
         fseek(file_bin, (page * 256), SEEK_SET);
         fread(memoryStack[pageTable[page].indexMemory].bin, 256, 1,file_bin);
 
-        printf("Virtual address: %d ", decimal);
-        printf("Physical address: %d ",(((pageTable[page].indexMemory) * 256) + offset));
-        printf("Value: %d\n",memoryStack[pageTable[page].indexMemory].bin[offset]);
+        fprintf(file_correct,"Virtual address: %d ", decimal);
+        fprintf(file_correct,"Physical address: %d ",(((pageTable[page].indexMemory) * 256) + offset));
+        fprintf(file_correct,"Value: %d\n",memoryStack[pageTable[page].indexMemory].bin[offset]);
     }
-    printf("Number of Translated Addresses = %d\n", time);
-    printf("Page Faults = %d\n", pageFault);
-    printf("Page Fault Rate = %0.3f\n", (float)pageFault/time);
-    printf("TLB hits = %d\n", hitTLB);
-    printf("TLB rate = %0.3f\n", (float)hitTLB/time);
+    fprintf(file_correct,"Number of Translated Addresses = %d\n", time);
+    fprintf(file_correct,"Page Faults = %d\n", pageFault);
+    fprintf(file_correct,"Page Fault Rate = %0.3f\n", (float)pageFault/time);
+    fprintf(file_correct,"TLB hits = %d\n", hitTLB);
+    fprintf(file_correct,"TLB rate = %0.3f\n", (float)hitTLB/time);
 
     fclose(file_txt);
-    fclose(file_bin);  
+    fclose(file_bin); 
+    fclose(file_correct); 
     return 0;
 }
 
