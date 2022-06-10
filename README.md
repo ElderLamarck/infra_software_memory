@@ -19,19 +19,19 @@ $ make test1
 ```
 esse comando deverá criar um arquivo chamado correct.txt e que os ultimos valores deverão ser:
 
-Virtual address: 45563 Physical address: 6395 Value: 126
-Virtual address: 12107 Physical address: 6475 Value: -46
-Number of Translated Addresses = 1000
-Page Faults = 538
-Page Fault Rate = 0.538
-TLB hits = 54
-TLB rate = 0.054
+- Virtual address: 45563 Physical address: 6395 Value: 126
+- Virtual address: 12107 Physical address: 6475 Value: -46
+- Number of Translated Addresses = 1000
+- Page Faults = 538
+- Page Fault Rate = 0.538
+- TLB hits = 54
+- TLB rate = 0.054
 
 existem 5 casos de teste pois é necessario dizer 2 tipos de substituição FIFO e RLU, tanto para a substituição da memoria fisica quanto
 para a estrutura da TLB.
 
-test1 - fifo fifo
-test2 - lru fifo
-test3 - fifo lru
-test4 - lru lru
-test5 - caso de erro, não passar argumentos
+- test1 - fifo fifo
+- test2 - lru fifo
+- test3 - fifo lru
+- test4 - lru lru
+- test5 - caso de erro, não passar argumentos
