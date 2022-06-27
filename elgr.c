@@ -38,16 +38,15 @@ unsigned int getPage(int decimal);
 
 int main(int argc, char *argv[]){
     if(argc < 4){
-        exit(-1);
-    }
-
-    if(strcmp(argv[1], "addresses.txt") != 0){
+        printf("quantidade insuficiente de argumentos\n");
         exit(-1);
     }
     if(strcmp(argv[2], "lru") != 0 && strcmp(argv[2], "fifo") != 0){
+        printf("argumento de ordenação da PageTable fora do padrão ('lru' ou 'fifo')\n");
         exit(-1);
     }
     else if(strcmp(argv[3], "lru") != 0 && strcmp(argv[3], "fifo") != 0){
+        printf("argumento de ordenação da TLB fora do padrão ('lru' ou 'fifo')\n");
         exit(-1);
     }
 
@@ -55,15 +54,20 @@ int main(int argc, char *argv[]){
     int time = 0, lock = 0, found = NOT_IN_MEMORY;
     int countTLB = 0, hitTLB = 0, lock2 = 0;
 
-    FILE *file_txt = fopen("addresses.txt" , "r");
+    FILE *file_txt = fopen(argv[1] , "r");
     FILE *file_bin = fopen("BACKING_STORE.bin", "r");
     FILE *file_correct = fopen("correct.txt", "w");
     fpos_t position;
 
     if(file_txt == NULL){
+        printf("arquivo de texto com os endereços não pode ser aberto\n");
         exit(-1);
     }
     fgetpos(file_txt, &position);
+
+    for(int i = 0; i < SIZE_TLB; i++){
+        tlb[i].page = -1;
+    }
 
     while(fscanf(file_txt, "%d", &decimal)!= EOF){  
         int page = getPage(decimal);
@@ -77,13 +81,13 @@ int main(int argc, char *argv[]){
                 pageTable[page].uses = time;
                 tlb[i].uses = time;
                 hitTLB++;
+                break;
             }
         }
 
         if(found == NOT_IN_MEMORY){
             if(pageTable[page].isCreated == NOT_IN_MEMORY){
                 pageFault++;
-
 
                 if (count < SIZE_MEMORY && lock == 0){
                     pageTable[page].indexMemory = count;
@@ -167,8 +171,8 @@ int main(int argc, char *argv[]){
     fprintf(file_correct,"Number of Translated Addresses = %d\n", time);
     fprintf(file_correct,"Page Faults = %d\n", pageFault);
     fprintf(file_correct,"Page Fault Rate = %0.3f\n", (float)pageFault/time);
-    fprintf(file_correct,"TLB hits = %d\n", hitTLB);
-    fprintf(file_correct,"TLB rate = %0.3f\n", (float)hitTLB/time);
+    fprintf(file_correct,"TLB Hits = %d\n", hitTLB);
+    fprintf(file_correct,"TLB Hit Rate = %0.3f\n", (float)hitTLB/time);
 
     fclose(file_txt);
     fclose(file_bin); 
